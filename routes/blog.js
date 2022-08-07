@@ -48,8 +48,16 @@ router.post("/posts", async function (req, res) {
   res.redirect("/posts");
 });
 
-router.get("/posts/:id", async function (req, res) {
-  const postId = req.params.id;
+router.get("/posts/:id", async function (req, res, next) {
+  let postId = req.params.id;
+
+  try {
+    postId = new ObjectId(postId);
+  } catch (error) {
+    return res.status(404).render("404");
+    // return next(error);
+  }
+
   const post = await db
     .getDB()
     .collection("posts")
@@ -100,5 +108,12 @@ router.post("/posts/:id/edit", async function (req, res) {
     );
   res.redirect('/posts');
 });
+
+router.post('/posts/:id/delete', async function(req, res){
+  const postId = new ObjectId(req.params.id);
+  const result = await db.getDB().collection('posts').deleteOne({_id: postId});
+
+  res.redirect('/posts');
+})
 
 module.exports = router;

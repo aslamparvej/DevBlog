@@ -16,7 +16,6 @@ function getDB() {
             message:'Database connection not established!'
         }
     }
-    console.log("Everything is OK!");
     return database;
 }
 
